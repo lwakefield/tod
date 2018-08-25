@@ -1,0 +1,10 @@
+name: cryno
+version: 0.0.0
+
+dependencies:
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
+    version: ~> 0.10.0
+  commander:
+    github: mrrooijen/commander
+    version: ~> 0.3.3
