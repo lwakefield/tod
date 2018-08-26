@@ -11,18 +11,18 @@ class Command
 
         parser = OptionParser.new do |p|
             p.banner = "Usage: add [task name]"
-            p.on( "-u URGENCY", "--urgency=URGENCY", "Urgency of task") { |v|
+            p.on( "-u URGENCY", "--urgency=URGENCY", "Urgency of task") do |v|
                 task.urgency = v.to_i
-            }
-            p.on("-i IMPORTANCE", "--importance=IMPORTANCE", "Importance of task") { |v|
+            end
+            p.on("-i IMPORTANCE", "--importance=IMPORTANCE", "Importance of task") do |v|
                 task.importance = v.to_i
-            }
-            p.on("-t TAG", "--tag=TAG", "Tag the task") { |v|
+            end
+            p.on("-t TAG", "--tag=TAG", "Tag the task") do |v|
                 task.tags << v
-            }
+            end
             # # TODO finish this
             p.on "-d DELAY", "--delay=DELAY", "Delay the task until" do |v|
-                task.delay_until = Time.now >> v
+                task.delay_until = Time.utc_now >> v
             end
             p.unknown_args { |v| task.name = v.join " " }
         end

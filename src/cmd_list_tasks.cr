@@ -23,7 +23,10 @@ class Command
         vals = [] of String
         conditions = [] of String
 
-        conditions << "status not in (#{Status::Deleted.to_i}, #{Status::Completed.to_i})" unless all || status
+        unless all
+            conditions << "status not in (#{Status::Deleted.to_i}, #{Status::Completed.to_i})"
+            conditions << "(delay_until is null or delay_until < date('now', 'utc'))"
+        end
         if tags.size > 0
             conditions.concat tags.map { |v| "tags like ?"}
             vals.concat tags.map { |v| "%\"#{v}\"%" }
