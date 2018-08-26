@@ -7,8 +7,7 @@ require "./status"
 
 class Command
     def self.add_task2 (args)
-        task = Task.new
-        task.status = Status::Upcoming
+        task = Task.new status: Status::Upcoming
 
         parser = OptionParser.new do |p|
             p.banner = "Usage: add [task name]"

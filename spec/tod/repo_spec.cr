@@ -73,7 +73,7 @@ describe "Repo.get_task" do
 end
 
 describe "Repo.update_task" do
-    it "creates a simple task" do
+    it "updates a task" do
         now = Time.utc_now
         task = Task.new(
             id: 1i64,

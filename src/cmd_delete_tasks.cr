@@ -17,6 +17,10 @@ class Command
             end
         end
 
-        task_ids.each { |id| Repo.update_task({ "id" => id, "status" => Status::Deleted.to_i }) }
+        tasks = Repo.get_tasks(task_ids)
+        tasks.each do |t|
+            t.status = Status::Deleted
+            Repo.update_task (t)
+        end
     end
 end

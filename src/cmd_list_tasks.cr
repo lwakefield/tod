@@ -5,6 +5,7 @@ require "./db"
 require "./status"
 require "./print"
 
+# TODO: refactor this
 class Command
     def self.list_tasks (args)
         tags = [] of String
