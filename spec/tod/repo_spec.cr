@@ -5,6 +5,7 @@ require "../spec_helper"
 require "../../src/repo"
 require "../../src/db"
 require "../../src/status"
+require "../../src/task"
 
 describe "Repo.create_task" do
     it "creates a simple task" do

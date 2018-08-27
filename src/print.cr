@@ -20,6 +20,7 @@ def print_tasks (tasks)
     formatted_tasks = tasks.map &.to_h
     formatted_tasks.each do |task|
         task["tags"] = task["tags"].as(Array).join ","
+        task["name"] = task["name"].to_s[0...37] + "..." if task["name"].as(String).size > 40
     end
 
     formatted_tasks.each do |task|

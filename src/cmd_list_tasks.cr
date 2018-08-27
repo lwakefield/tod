@@ -4,6 +4,7 @@ require "json"
 require "./db"
 require "./status"
 require "./print"
+require "./task"
 
 # TODO: refactor this
 class Command

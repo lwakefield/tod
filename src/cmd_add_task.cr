@@ -4,6 +4,7 @@ require "option_parser"
 require "./repo"
 require "./time_util"
 require "./status"
+require "./Task"
 
 class Command
     def self.add_task2 (args)
