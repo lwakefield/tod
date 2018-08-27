@@ -54,15 +54,17 @@ struct Task
         return "#{span.hours}h"
     end
 
-    def fetch(to_fetch)
-        return age if to_fetch == "age"
-        return priority if to_fetch == "priority"
-        {% for var in @type.instance_vars %}
-            return @{{var.name}} if "{{var.name}}" == to_fetch
+    def to_h
+        {% begin %}
+            {
+                "priority" => priority,
+                "age" => age,
+                {% for var in @type.instance_vars %}
+                    "{{var.name}}" => @{{var.name}},
+                {% end %}
+            }
         {% end %}
-        raise "could not find property #{to_fetch}"
     end
-
 end
 
 class Repo
