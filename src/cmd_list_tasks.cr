@@ -19,6 +19,8 @@ class Command
             parser.on("-a", "--all", "Show all tasks regardless of status") { all = true }
         end
 
+        # TODO list a single task
+
         # prepare the query
         vals = [] of String
         conditions = [] of String
@@ -40,23 +42,12 @@ class Command
         where_clause = "where " + conditions.join " and " if conditions.size > 0
 
         q = <<-QUERY
-            select
-                id,
-                (date('now') - created_at) || 'd' as age,
-                name,
-                tags,
-                urgency as u,
-                importance as i,
-                urgency + importance as p,
-                case status
-                    #{ Status.values.map { |v| "when #{v.value} then '#{v.to_s.downcase}'"}.join " " }
-                end status
-            from tasks
+            select * from tasks
             #{ where_clause unless where_clause.nil?}
-            order by p desc
         QUERY
 
-        tasks = DATABASE.query(q, vals).to_array
+        tasks = Task.from_rs DATABASE.query(q, vals)
+        tasks = tasks.sort { |a, b| b.priority <=> a.priority }
         if tasks.size == 0
             puts "No tasks remaining!"
             exit(0)

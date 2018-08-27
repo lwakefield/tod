@@ -32,11 +32,11 @@ class Command
             end
         end
 
-
         task_to_update            = Repo.get_task(id)
         task_to_update.urgency    = urgency.as(Int32) unless urgency.nil?
         task_to_update.importance = importance.as(Int32) unless importance.nil?
         task_to_update.name       = name.as(String) unless name.nil?
+        task_to_update.status     = status.as(Status) unless status.nil?
         task_to_update.tags       = (task_to_update.tags | tags_to_add) - tags_to_remove
 
         Repo.update_task(task_to_update)

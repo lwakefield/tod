@@ -41,6 +41,28 @@ struct Task
         @modified_at = nil,
         @delay_until = nil,
     ) end
+
+    def priority
+        @urgency + @importance
+    end
+
+    def age
+        return "0h" if Time.nil?
+
+        span = Time.utc_now - @created_at.as(Time)
+        return "#{span.days}d" if span.days > 0
+        return "#{span.hours}h"
+    end
+
+    def fetch(to_fetch)
+        return age if to_fetch == "age"
+        return priority if to_fetch == "priority"
+        {% for var in @type.instance_vars %}
+            return @{{var.name}} if "{{var.name}}" == to_fetch
+        {% end %}
+        raise "could not find property #{to_fetch}"
+    end
+
 end
 
 class Repo
@@ -130,7 +152,9 @@ class Repo
     end
 
     def self.get_tasks (task_ids)
-        rows = DATABASE.query "select * from tasks where id in (?)", task_ids
+        id_conditions = ["id=?"] * task_ids.size
+
+        rows = DATABASE.query "select * from tasks where #{id_conditions.join " or "}", task_ids
         tasks = Task.from_rs rows
         raise "no tasks found" if tasks.size == 0
         return tasks
