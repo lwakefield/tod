@@ -3,6 +3,7 @@ require "./cmd_add_task"
 require "./cmd_list_tasks"
 require "./cmd_delete_tasks"
 require "./cmd_update_task"
+require "./cmd_detail_task"
 
 migrate_db
 
@@ -20,6 +21,8 @@ when "u", "update"
     Command.update_task(ARGV[1..-1])
 when "delete"
     Command.delete_tasks(ARGV[1..-1])
+when "detail"
+    Command.detail_task(ARGV[1..-1])
 when "done", "complete", "finish"
     Command.update_task(ARGV[1..-1] + ["--status=completed"])
 when "start", "begin"

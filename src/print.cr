@@ -42,3 +42,14 @@ def print_tasks (tasks)
         puts row
     end
 end
+
+def print_task(task)
+    task_hash = task.to_h
+    # we do +1 to account for the :
+    widest_key = task_hash.keys.map(&.size).max + 1
+    task_hash.each do |k, v|
+        key = (k + ":").ljust(widest_key)
+        key = key.colorize.bold if STDOUT.tty?
+        puts "#{key} #{v.to_s}"
+    end
+end

@@ -20,8 +20,6 @@ class Command
             parser.on("-a", "--all", "Show all tasks regardless of status") { all = true }
         end
 
-        # TODO list a single task
-
         # prepare the query
         vals = [] of String
         conditions = [] of String
