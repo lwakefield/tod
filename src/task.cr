@@ -12,31 +12,7 @@ module StatusConverter
     end
 end
 
-struct Task
-    DB.mapping({
-        id: Int64?,
-        created_at: Time?,
-        modified_at: Time?,
-        name: String,
-        urgency: Int32,
-        importance: Int32,
-        status: { type: Status, converter: StatusConverter },
-        tags: { type: Array(String), converter: TagsConverter },
-        delay_until: Time?
-    })
-
-    def initialize(
-        @id          = nil,
-        @name        = "",
-        @urgency     = 0,
-        @importance  = 0,
-        @tags        = [] of String,
-        @status      = nil,
-        @created_at  = nil,
-        @modified_at = nil,
-        @delay_until = nil,
-    ) end
-
+module BaseTask
     def priority
         @urgency + @importance
     end
@@ -61,4 +37,63 @@ struct Task
             }
         {% end %}
     end
+
+end
+
+struct Task
+    include BaseTask
+
+    DB.mapping({
+        id: Int64?,
+        created_at: Time?,
+        modified_at: Time?,
+        name: String,
+        urgency: Int32,
+        importance: Int32,
+        status: { type: Status, converter: StatusConverter },
+        tags: { type: Array(String), converter: TagsConverter },
+        delay_until: Time?
+    })
+
+    def initialize(
+        @id          = nil,
+        @name        = "",
+        @urgency     = 0,
+        @importance  = 0,
+        @tags        = [] of String,
+        @status      = nil,
+        @created_at  = nil,
+        @modified_at = nil,
+        @delay_until = nil,
+    ) end
+end
+
+struct DeprecatedTask
+    include BaseTask
+
+    DB.mapping({
+        id: Int64?,
+        created_at: Time?,
+        modified_at: Time?,
+        name: String,
+        urgency: Int32,
+        importance: Int32,
+        status: { type: Status, converter: StatusConverter },
+        tags: { type: Array(String), converter: TagsConverter },
+        delay_until: Time?,
+        deprecated_at: Time?
+    })
+
+    def initialize(
+        @id            = nil,
+        @name          = "",
+        @urgency       = 0,
+        @importance    = 0,
+        @tags          = [] of String,
+        @status        = nil,
+        @created_at    = nil,
+        @modified_at   = nil,
+        @delay_until   = nil,
+        @deprecated_at = nil
+    ) end
 end
