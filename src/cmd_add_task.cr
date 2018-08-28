@@ -1,6 +1,7 @@
 require "time" # will be required by time_util, but lets be explicit for now
 require "option_parser"
 
+require "./print"
 require "./repo"
 require "./time_util"
 require "./status"
@@ -37,7 +38,7 @@ class Command
             exit(1)
         end
 
-        Repo.create_task(task)
-        # TODO print the created_task
+        created_task = Repo.create_task(task)
+        print_task created_task
     end
 end

@@ -1,6 +1,7 @@
 require "option_parser"
 require "json"
 
+require "./print"
 require "./repo"
 require "./status"
 require "./time_util"
@@ -45,7 +46,8 @@ class Command
         task_to_update.delay_until = delay_until.as(Time) unless delay_until.nil?
         task_to_update.tags        = (task_to_update.tags | tags_to_add) - tags_to_remove
 
-        Repo.update_task(task_to_update)
+        updated_task = Repo.update_task(task_to_update)
+        print_task updated_task
     end
 end
 
