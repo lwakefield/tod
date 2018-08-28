@@ -17,6 +17,8 @@ when "a", "add"
     Command.add_task2(ARGV[1..-1])
 when "l", "list"
     Command.list_tasks(ARGV[1..-1])
+when "started", "inprogress"
+    Command.list_tasks(ARGV[1..-1] + ["--status=started"])
 when "u", "update"
     Command.update_task(ARGV[1..-1])
 when "delete"
