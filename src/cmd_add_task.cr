@@ -10,31 +10,30 @@ class Command
     def self.add_task2 (args)
         task = Task.new status: Status::Upcoming
 
-        parser = OptionParser.new do |p|
-            p.banner = "Usage: add [task name]"
+        parser = OptionParser.new
+        parser.banner = "Usage: add [task name]"
 
-            p.on(
-                "-u URGENCY", "--urgency=URGENCY", "Urgency of task"
-            ) { |v| task.urgency = v.to_i }
+        parser.on(
+            "-u URGENCY", "--urgency=URGENCY", "Urgency of task"
+        ) { |v| task.urgency = v.to_i }
 
-            p.on(
-                "-i IMPORTANCE", "--importance=IMPORTANCE", "Importance of task"
-            ) { |v| task.importance = v.to_i }
+        parser.on(
+            "-i IMPORTANCE", "--importance=IMPORTANCE", "Importance of task"
+        ) { |v| task.importance = v.to_i }
 
-            p.on(
-                "-t TAG", "--tag=TAG", "Tag the task"
-            ) { |v| task.tags << v }
+        parser.on(
+            "-t TAG", "--tag=TAG", "Tag the task"
+        ) { |v| task.tags << v }
 
-            p.on(
-                "-d DELAY", "--delay=DELAY", "Delay the task until a certain time"
-            ) { |v| task.delay_until = Time.utc_now >> v }
+        parser.on(
+            "-d DELAY", "--delay=DELAY", "Delay the task until a certain time"
+        ) { |v| task.delay_until = Time.utc_now >> v }
 
-            p.unknown_args { |v| task.name = v.join " " }
-        end
+        parser.unknown_args { |v| task.name = v.join " " }
         parser.parse(args)
 
         if task.name == ""
-            puts parser.to_s && exit(1)
+            puts parser.to_s
             exit(1)
         end
 
