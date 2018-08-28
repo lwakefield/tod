@@ -32,6 +32,9 @@ struct Time
             return self.next Time::DayOfWeek.parse(day_of_week[1])
         end
 
+        return self + 1.day if str == "tomorrow"
+        return self + 1.week if str.match /next\W?week/
+
         begin
             return self + Time::Span.parse(str)
         rescue
