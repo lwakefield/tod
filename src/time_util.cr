@@ -20,6 +20,9 @@ struct Time
     end
 
     def >> (str)
+        return self + 1.day if str == "tomorrow"
+        return self + 1.week if str.match /next\W?week/
+
         if str.starts_with? "this"
             day_of_week = str.match(/this\W?(\w+)/)
             return nil if day_of_week.nil?
@@ -31,9 +34,6 @@ struct Time
             return nil if day_of_week.nil?
             return self.next Time::DayOfWeek.parse(day_of_week[1])
         end
-
-        return self + 1.day if str == "tomorrow"
-        return self + 1.week if str.match /next\W?week/
 
         begin
             return self + Time::Span.parse(str)
