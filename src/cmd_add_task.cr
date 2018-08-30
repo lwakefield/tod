@@ -28,7 +28,7 @@ class Command
 
         parser.on(
             "-d DELAY", "--delay=DELAY", "Delay the task until a certain time"
-        ) { |v| task.delay_until = (Time.utc_now >> v).as(Time).at_beginning_of_day }
+        ) { |v| task.delay_until = Time.utc_now >> v }
 
         parser.unknown_args { |v| task.name = v.join " " }
         parser.parse(args)

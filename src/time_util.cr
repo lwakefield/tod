@@ -20,25 +20,25 @@ struct Time
     end
 
     def >> (str)
-        return self + 1.day if str == "tomorrow"
-        return self + 1.week if str.match /next\W?week/
-
-        if str.starts_with? "this"
-            day_of_week = str.match(/this\W?(\w+)/)
-            return nil if day_of_week.nil?
-            return self.this Time::DayOfWeek.parse(day_of_week[1])
-        end
-
-        if str.starts_with? "next"
-            day_of_week = str.match(/next\W?(\w+)/)
-            return nil if day_of_week.nil?
-            return self.next Time::DayOfWeek.parse(day_of_week[1])
-        end
-
-        begin
-            return self + Time::Span.parse(str)
-        rescue
-            raise Exception.new "Could not shift #{self} by #{str}"
+        if str == "tomorrow"
+            return (self + 1.day).at_beginning_of_day
+        elsif str.match /next\W?week/
+            return (self + 1.week).at_beginning_of_day
+        elsif (match = str.match(/this\W?(\w+)/))
+            return self.this Time::DayOfWeek.parse(match[1])
+        elsif (match = str.match(/next\W?(\w+)/))
+            return self.next Time::DayOfWeek.parse(match[1])
+        else
+            begin
+                span = Time::Span.parse(str)
+                shifted = self + span
+                if span.is_a? Time::MonthSpan ||span.as(Time::Span).days >= 1
+                    return shifted.at_beginning_of_day
+                end
+                return shifted
+            rescue
+                raise Exception.new "Could not shift #{self} by #{str}"
+            end
         end
     end
 end

@@ -26,7 +26,7 @@ class Command
             parser.on("-T TAG", "--remove-tag=TAG", "Remove a tag from the task") { |v| tags_to_remove << v }
             parser.on(
                 "-d DELAY", "--delay=DELAY", "Delay the task until a certain time"
-            ) { |v| delay_until = (Time.utc_now >> v).as(Time).at_beginning_of_day }
+            ) { |v| delay_until = Time.utc_now >> v }
             parser.unknown_args do |v|
                 if v.size == 0
                     puts parser.to_s && exit(1)
