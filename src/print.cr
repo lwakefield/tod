@@ -12,6 +12,8 @@ COLUMNS = [
     "status",
 ]
 
+COLS = `tput cols`.strip.to_i
+
 def print_tasks (tasks)
     # Work out the size for each column
     longest_strings = { } of String => Int32
@@ -20,7 +22,6 @@ def print_tasks (tasks)
     formatted_tasks = tasks.map &.to_h
     formatted_tasks.each do |task|
         task["tags"] = task["tags"].as(Array).join ","
-        task["name"] = task["name"].to_s[0...37] + "..." if task["name"].as(String).size > 40
     end
 
     formatted_tasks.each do |task|
@@ -32,8 +33,27 @@ def print_tasks (tasks)
         end
     end
 
+    required_space = longest_strings.values.sum + (longest_strings.size - 1)
+    available_space = `tput cols`.strip.to_i
+    if STDOUT.tty? && required_space > available_space
+        if available_space < 80
+            longest_strings["urgency"] = 1
+            longest_strings["importance"] = 1
+            longest_strings["priority"] = 1
+        end
+
+        # TODO there has to be a better var name than this...
+        name_max_space = available_space - (longest_strings.reject("name").values.sum + (longest_strings.size - 1))
+        longest_strings["name"] = name_max_space if required_space > available_space
+
+        formatted_tasks.each do |task|
+            task["name"] = task["name"].to_s[0...(name_max_space-3)] + "..." if task["name"].as(String).size > name_max_space
+        end
+    end
+
+
     # Print the headers
-    headers = COLUMNS.map { |v| v.ljust(longest_strings[v]) }.join " "
+    headers = COLUMNS.map { |v| v.ljust(longest_strings[v])[0...longest_strings[v]] }.join " "
     headers = headers.colorize.bold if STDOUT.tty?
     puts headers
 
