@@ -27,6 +27,10 @@ class Command
         ) { |v| task.tags << v }
 
         parser.on(
+            "-s STATUS", "--status=TAG", "Status of the task"
+        ) { |v| task.status = Status.parse v }
+
+        parser.on(
             "-d DELAY", "--delay=DELAY", "Delay the task until a certain time"
         ) { |v| task.delay_until = Time.utc_now >> v }
 
