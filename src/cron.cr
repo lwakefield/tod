@@ -15,13 +15,21 @@ module Cron
         month :        Array(Int32),
         day_of_week :  Array(Int32),
     )
+    SCHEDULE_ALIASES = {
+        "@yearly":  "0 0 1 1 *",
+        "@annualy": "0 0 1 1 *",
+        "@monthly": "0 0 1 * *",
+        "@weekly":  "0 0 * * 0",
+        "@daily":   "0 0 * * *",
+        "@hourly":  "0 * * * *",
+    }
 end
 
 struct Cron::Schedule
     def next(from_time : Time)
         hours_in_day = 24
         minutes_in_day = hours_in_day * 60
-        minutes_in_year = minutes_in_day * 365
+        minutes_in_year = minutes_in_day * 366
 
         # TODO: this is not very efficient...
         minutes_to_add = (1..minutes_in_year).find do |minutes_to_add|
@@ -40,6 +48,10 @@ struct Cron::Schedule
     end
 
     def self.parse (cron_schedule_str)
+        unless (aliased = SCHEDULE_ALIASES[cron_schedule_str]?).nil?
+            return self.parse(aliased)
+        end
+
         parts = cron_schedule_str.split(" ")
 
         raise "Malformed crontab: #{cron_schedule_str}" if parts.size != 5
@@ -50,7 +62,7 @@ struct Cron::Schedule
         month        = parse_month parts[3]
         day_of_week  = parse_day_of_week parts[4]
 
-        Cron::Schedule.new(
+        self.new(
             minute,
             hour,
             day_of_month,
@@ -101,14 +113,3 @@ struct Cron::Schedule
         end
     end
 end
-
-# now = Time.now
-# puts "now: #{now}"
-# puts Cron::Schedule.parse("*/15 * * * *").next now
-# puts Cron::Schedule.parse
-
-# puts parse_minute "1"
-# puts parse_minute "1-5"
-# puts parse_minute "*/5"
-# puts parse_minute "0-30/5"
-# puts parse_minute "1,2,3,4,4,4-10"
