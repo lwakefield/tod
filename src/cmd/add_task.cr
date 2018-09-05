@@ -9,6 +9,7 @@ require "../task"
 
 def cmd_add_task (args)
     task = Task.new status: Status::Upcoming
+    schedule = nil
 
     parser = OptionParser.new
     parser.banner = "Usage: add [task name]"
@@ -31,6 +32,11 @@ def cmd_add_task (args)
     parser.on(
         "-d DELAY", "--delay=DELAY", "Delay the task until a certain time"
     ) { |v| task.delay_until = Time.utc_now >> v }
+
+    parser.on(
+        "--schedule=SCHEDULE", "Schedule a recurring task"
+    ) {}
+
 
     parser.unknown_args { |v| task.name = v.join " " }
     parser.parse(args)

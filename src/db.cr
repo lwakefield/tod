@@ -33,4 +33,13 @@ def migrate_db
     rescue ex : SQLite3::Exception
         raise ex unless ex.message == "duplicate column name: delay_until"
     end
+    DATABASE.exec "create table if not exists schedules (
+        id integer,
+        task_id integer,
+        schedule text
+    )"
+    DATABASE.exec "create table if not exists scheduled_tasks (
+        schedule_id integer,
+        task_id integer
+    )"
 end

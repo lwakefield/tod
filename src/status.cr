@@ -3,4 +3,5 @@ enum Status
     Upcoming
     Started
     Completed
+    Scheduled
 end

@@ -100,4 +100,18 @@ class Repo
         raise "no tasks found" if tasks.size == 0
         return tasks
     end
+
+    def self.schedule_task (task_id, schedule)
+        q = <<-QUERY
+            insert into schedules
+            (task_id, schedule)
+            values(?, ?)
+        QUERY
+
+        DATABASE.exec q, task_id, schedule
+    end
+
+    # TODO we probably want this in it's own file
+    def self.update_schedules
+    end
 end
