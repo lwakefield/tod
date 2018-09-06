@@ -15,24 +15,29 @@ COLUMNS = [
 COLS = `tput cols`.strip.to_i
 
 def print_tasks (tasks)
+    # pre-formatting
+    to_format = tasks.map do |task|
+        { task, task.to_h }
+    end
+
+    to_format.each do |task, formatted|
+        formatted["tags"] = task.tags.join ","
+    end
+
     # Work out the size for each column
     longest_strings = { } of String => Int32
     COLUMNS.each { |v| longest_strings[v] = v.size }
+    to_format.each do |task, formatted|
+        formatted.each do |k, v|
+            next unless COLUMNS.includes? k
 
-    formatted_tasks = tasks.map &.to_h
-    formatted_tasks.each do |task|
-        task["tags"] = task["tags"].as(Array).join ","
-    end
-
-    formatted_tasks.each do |task|
-        COLUMNS.each do |prop|
-            prop_val = task[prop].to_s
-            if prop_val.size > longest_strings[prop]
-                longest_strings[prop] = prop_val.size
+            if v.to_s.size > longest_strings[k]
+                longest_strings[k] = v.to_s.size
             end
         end
     end
 
+    # trim the name if it is too long to fit on the screen
     required_space = longest_strings.values.sum + (longest_strings.size - 1)
     available_space = `tput cols`.strip.to_i
     if STDOUT.tty? && required_space > available_space
@@ -46,19 +51,32 @@ def print_tasks (tasks)
         name_max_space = available_space - (longest_strings.reject("name").values.sum + (longest_strings.size - 1))
         longest_strings["name"] = name_max_space if required_space > available_space
 
-        formatted_tasks.each do |task|
-            task["name"] = task["name"].to_s[0...(name_max_space-3)] + "..." if task["name"].as(String).size > name_max_space
+        to_format.each do |task, formatted|
+            next if task.name.size <= name_max_space
+
+            ellipsis = "..."
+            len = name_max_space - ellipsis.size
+            formatted["name"] = task.name[0...len] + ellipsis
         end
     end
-
 
     # Print the headers
     headers = COLUMNS.map { |v| v.ljust(longest_strings[v])[0...longest_strings[v]] }.join " "
     headers = headers.colorize.bold if STDOUT.tty?
     puts headers
 
-    formatted_tasks.each do |task|
-        row = COLUMNS.map { |v| task[v].to_s.ljust(longest_strings[v]) }.join " "
+    # Print the rows
+    to_format.map do |task, formatted|
+        row = COLUMNS.map { |v| formatted[v].to_s.ljust(longest_strings[v]) }.join " "
+
+        if task.status == Status::Started
+            row = row.colorize.fore(:green)
+        elsif task.priority >= 3
+            row = row.colorize.fore(:red)
+        elsif task.priority >= 1
+            row = row.colorize.fore(:yellow)
+        end
+
         puts row
     end
 end
