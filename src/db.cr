@@ -34,17 +34,3 @@ def migrate_db
         raise ex unless ex.message == "duplicate column name: delay_until"
     end
 end
-
-class SQLite3::ResultSet
-    def to_array
-        rows = [] of Hash(String, String)
-
-        each do
-            row = {} of String => String
-            column_names.each { |v| row[v] = read.to_s }
-            rows << row
-        end
-
-        return rows
-    end
-end

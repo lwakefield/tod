@@ -4,6 +4,7 @@ require "./cmd_list_tasks"
 require "./cmd_delete_tasks"
 require "./cmd_update_task"
 require "./cmd_detail_task"
+require "./cmd_report_tasks"
 
 migrate_db
 
@@ -25,6 +26,8 @@ when "delete"
     Command.delete_tasks(ARGV[1..-1])
 when "detail"
     Command.detail_task(ARGV[1..-1])
+when "report"
+    Command.report_tasks(ARGV[1..-1])
 when "done", "complete", "finish"
     Command.update_task(ARGV[1..-1] + ["--status=completed"])
 when "start", "begin"

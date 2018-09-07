@@ -29,7 +29,7 @@ class Command
             ) { |v| delay_until = Time.utc_now >> v }
             parser.unknown_args do |v|
                 if v.size == 0
-                    puts parser.to_s && exit(1)
+                    puts parser.to_s
                     exit(1)
                 end
 

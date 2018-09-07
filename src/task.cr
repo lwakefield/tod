@@ -44,14 +44,14 @@ struct Task
     include BaseTask
 
     DB.mapping({
-        id: Int64?,
-        created_at: Time?,
+        id:          Int64?,
+        created_at:  Time?,
         modified_at: Time?,
-        name: String,
-        urgency: Int32,
-        importance: Int32,
-        status: { type: Status, converter: StatusConverter },
-        tags: { type: Array(String), converter: TagsConverter },
+        name:        String,
+        urgency:     Int32,
+        importance:  Int32,
+        status:      { type: Status, converter: StatusConverter },
+        tags:        { type: Array(String), converter: TagsConverter },
         delay_until: Time?
     })
 
@@ -72,15 +72,15 @@ struct DeprecatedTask
     include BaseTask
 
     DB.mapping({
-        id: Int64?,
-        created_at: Time?,
-        modified_at: Time?,
-        name: String,
-        urgency: Int32,
-        importance: Int32,
-        status: { type: Status, converter: StatusConverter },
-        tags: { type: Array(String), converter: TagsConverter },
-        delay_until: Time?,
+        id:            Int64?,
+        created_at:    Time?,
+        modified_at:   Time?,
+        name:          String,
+        urgency:       Int32,
+        importance:    Int32,
+        status:        { type: Status, converter: StatusConverter },
+        tags:          { type: Array(String), converter: TagsConverter },
+        delay_until:   Time?,
         deprecated_at: Time?
     })
 
