@@ -7,6 +7,7 @@ if ARGV.size == 0
 end
 
 migrate_db
+update_scheduled_tasks
 
 case ARGV[0]
 when "a", "add"

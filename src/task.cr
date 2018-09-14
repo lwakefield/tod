@@ -37,7 +37,6 @@ module BaseTask
             }
         {% end %}
     end
-
 end
 
 struct Task

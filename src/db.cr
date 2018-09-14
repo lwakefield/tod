@@ -27,19 +27,23 @@ def migrate_db
         status integer default 0,
         tags json default '[]'
     )"
+
     begin
         DATABASE.exec "alter table tasks add column delay_until text"
         DATABASE.exec "alter table tasks_history add column delay_until text"
     rescue ex : SQLite3::Exception
         raise ex unless ex.message == "duplicate column name: delay_until"
     end
-    DATABASE.exec "create table if not exists schedules (
-        id integer,
-        task_id integer,
-        schedule text
-    )"
+
+    begin
+        DATABASE.exec "alter table tasks add column schedule text"
+        DATABASE.exec "alter table tasks_history add column schedule text"
+    rescue ex : SQLite3::Exception
+        raise ex unless ex.message == "duplicate column name: schedule"
+    end
+
     DATABASE.exec "create table if not exists scheduled_tasks (
-        schedule_id integer,
-        task_id integer
+        parent_id integer,
+        child_id integer,
     )"
 end

@@ -111,7 +111,42 @@ class Repo
         DATABASE.exec q, task_id, schedule
     end
 
-    # TODO we probably want this in it's own file
     def self.update_schedules
+        q = <<-QUERY
+            select id, schedule
+            from tasks
+            where schedule is not null
+        QUERY
+        schedules = DATABASE.query q, as: { Int32, String }
+
+        DATABASE.query "select * from tasks where id in (select * from scheduled)"
+
+        # we want to update the current existing schedules.
+        # we call the scheduling task the parent, and the scheduled task the child
+        # from the parent, we want to find the newest child
+        # from the newest child, we want to fill any gaps from then, and now.
+
+        # when creating a child task, we set the created_at based off the
+        # schedule, ie. not Time.now
+
+        schedules.each do |parent_id, schedule|
+            q = <<-QUERY
+                select * from tasks
+                where id in (
+                    select child_id from scheduled
+                    where parent_id = ?
+                )
+                order by id desc
+                limit 1
+            QUERY
+            last_scheduled = DATABASE.query_one q, parent_id, as: Task
+
+            cron_schedule = Cron::Schedule.parse(last_scheduled.schedule)
+            next_scheduled = last_scheduled
+            now = Time.now
+            while next_scheduled < now
+            end
+        end
+
     end
 end
