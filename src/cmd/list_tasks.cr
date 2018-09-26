@@ -10,12 +10,14 @@ def cmd_list_tasks (args)
     tags = [] of String
     status = nil
     all = false
+    scheduled = false
 
     OptionParser.parse args do |parser|
         parser.banner = "Usage: list [arguments]"
         parser.on("-t TAG", "--tag=TAG", "Filter against tags") { |v| tags << v }
         parser.on("-s STATUS", "--status=STATUS", "Filter against status") { |v| status = Status.parse(v).to_i }
         parser.on("-a", "--all", "Show all tasks regardless of status") { all = true }
+        parser.on("--scheduled", "Show all scheduled tasks") { scheduled = true }
     end
 
     # prepare the query
@@ -26,6 +28,9 @@ def cmd_list_tasks (args)
         conditions << "status not in (#{Status::Deleted.to_i}, #{Status::Completed.to_i})"
         conditions << "(delay_until is null or delay_until < date('now', 'utc'))"
     end
+
+    conditions << "status is #{"not" unless scheduled} #{Status::Scheduled.to_i}"
+
     if tags.size > 0
         conditions.concat tags.map { |v| "tags like ?"}
         vals.concat tags.map { |v| "%\"#{v}\"%" }

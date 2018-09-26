@@ -1,3 +1,4 @@
+require "json"
 require "time"
 
 module TagsConverter
@@ -29,8 +30,8 @@ module BaseTask
     def to_h
         {% begin %}
             {
-                "priority" => priority,
-                "age" => age,
+                "priority" => @priority,
+                "age" => @age,
                 {% for var in @type.instance_vars %}
                     "{{var.name}}" => @{{var.name}},
                 {% end %}
@@ -51,7 +52,8 @@ struct Task
         importance:  Int32,
         status:      { type: Status, converter: StatusConverter },
         tags:        { type: Array(String), converter: TagsConverter },
-        delay_until: Time?
+        delay_until: Time?,
+        schedule:    String?,
     })
 
     def initialize(
@@ -64,6 +66,7 @@ struct Task
         @created_at  = nil,
         @modified_at = nil,
         @delay_until = nil,
+        @schedule    = "",
     ) end
 end
 
@@ -80,6 +83,7 @@ struct DeprecatedTask
         status:        { type: Status, converter: StatusConverter },
         tags:          { type: Array(String), converter: TagsConverter },
         delay_until:   Time?,
+        schedule:        String?,
         deprecated_at: Time?
     })
 
@@ -93,6 +97,7 @@ struct DeprecatedTask
         @created_at    = nil,
         @modified_at   = nil,
         @delay_until   = nil,
+        @schedule      = nil,
         @deprecated_at = nil
     ) end
 end

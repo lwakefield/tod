@@ -35,8 +35,7 @@ def cmd_add_task (args)
 
     parser.on(
         "--schedule=SCHEDULE", "Schedule a recurring task"
-    ) {}
-
+    ) { |v| task.schedule = v }
 
     parser.unknown_args { |v| task.name = v.join " " }
     parser.parse(args)

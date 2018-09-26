@@ -6,6 +6,8 @@ DATABASE_FILE = ENV.fetch "TOD_DB", "sqlite3://#{File.expand_path "~/.tod.db"}"
 DATABASE = DB.open DATABASE_FILE
 
 def migrate_db
+    # TODO either work out how to change the schema to support default
+    # timestamp, or drop this approach
     DATABASE.exec "create table if not exists tasks (
         id integer primary key,
         created_at text,
@@ -44,6 +46,6 @@ def migrate_db
 
     DATABASE.exec "create table if not exists scheduled_tasks (
         parent_id integer,
-        child_id integer,
+        child_id integer
     )"
 end

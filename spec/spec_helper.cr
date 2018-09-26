@@ -10,5 +10,6 @@ require "../src/db"
 Spec.before_each do
     DATABASE.exec "drop table if exists tasks"
     DATABASE.exec "drop table if exists tasks_history"
+    DATABASE.exec "drop table if exists scheduled_tasks"
     migrate_db
 end

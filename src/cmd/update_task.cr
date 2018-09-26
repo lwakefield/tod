@@ -15,6 +15,7 @@ def cmd_update_task (args)
     delay_until = nil
     id = nil
     name = nil
+    schedule = nil
 
     OptionParser.parse args do |parser|
         parser.banner = "Usage: add [flags] <id> <name>"
@@ -26,6 +27,9 @@ def cmd_update_task (args)
         parser.on(
             "-d DELAY", "--delay=DELAY", "Delay the task until a certain time"
         ) { |v| delay_until = Time.utc_now >> v }
+        parser.on(
+            "--schedule=SCHEDULE", "Schedule a recurring task"
+        ) { |v| schedule = v }
         parser.unknown_args do |v|
             if v.size == 0
                 puts parser.to_s
