@@ -5,7 +5,7 @@ require "../spec_helper"
 require "../../src/db"
 require "../../src/status"
 require "../../src/task"
-require "../../src/schedules"
+require "../../src/scheduling"
 
 TWO_THOUSAND = Time.new 2000, 1, 1
 

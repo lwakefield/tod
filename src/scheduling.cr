@@ -17,11 +17,11 @@ module Scheduling
                 and status = #{Status::Scheduling.to_i}
         ", as: Task
         schedules.each do |parent|
-            update_schedule parent, update_until
+            update_scheduling_task parent, update_until
         end
     end
 
-    def self.update_schedule (parent, update_until = Time.now)
+    def self.update_scheduling_task (parent, update_until = Time.now)
         last_scheduled_at = (get_last_scheduled_at(parent.id) || parent.created_at).as Time
         schedule = Cron::Schedule.parse(parent.schedule.as(String))
 

@@ -46,5 +46,6 @@ def cmd_add_task (args)
     end
 
     created_task = Repo.create_task(task)
+    Scheduling.update_schedule task
     print_task created_task
 end
